@@ -1,0 +1,1029 @@
+<style>
+  /* Ẩn thanh bên (sidebar), chân trang và bình luận của Blogspot */
+  .sidebar-container, aside, #sidebar, #sidebar-wrapper, 
+  .blog-pager, .post-footer, #comments, .comments {
+    display: none !important;
+  }
+
+  /* Kéo dãn khung bài viết chiếm 100% chiều ngang màn hình */
+  .main-container, .main, #main, #content, .content-inner, 
+  .post-body, article, .post-filter-message {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    float: none !important;
+  }
+</style>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8"></meta>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"></meta>
+  <title>HSK 5 Master - Luyện Thi 100 Từ Vựng Cốt Lõi</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"></link>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"></link>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=Noto+Serif+SC:wght@600;700;900&amp;display=swap" rel="stylesheet"></link>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            hanzi: ['"Noto Serif SC"', '"PingFang SC"', '"Microsoft YaHei"', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-preserve-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .pop-anim { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    @keyframes pop {
+      0% { transform: scale(0.85); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-100 selection:text-indigo-800">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchMode('quiz_zh_vi')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-100 font-hanzi font-black text-xl">
+          五
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 leading-tight text-base sm:text-lg flex items-center gap-1.5">
+            HSK 5 Master <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-semibold">100 Từ Cốt Lõi</span>
+          </h1>
+          <p class="text-xs text-slate-500 hidden sm:block">Luyện tập thông minh &amp; phản xạ phản hồi tức thì</p>
+        </div>
+      </div>
+
+      <!-- Quick Badges & Settings -->
+      <div class="flex items-center space-x-2 sm:space-x-3">
+        <!-- Streak -->
+        <div class="flex items-center bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 text-xs sm:text-sm font-semibold">
+          <i class="ph-fill ph-fire text-amber-500 mr-1 text-base"></i>
+          <span id="streak-counter">0</span>
+        </div>
+        <!-- Favorites count -->
+        <button class="flex items-center bg-rose-50 hover:bg-rose-100 border border-rose-200 px-2.5 py-1 rounded-full text-rose-700 text-xs sm:text-sm font-semibold transition" onclick="filterStarredWords()" title="Xem sổ tay từ khó">
+          <i class="ph-fill ph-star text-rose-500 mr-1 text-base"></i>
+          <span id="star-counter">0</span>
+        </button>
+        <!-- Speech rate -->
+        <select class="bg-slate-100 hover:bg-slate-200 border-none rounded-lg py-1 px-2 text-slate-700 text-xs font-medium cursor-pointer outline-none" id="tts-rate-select">
+          <option value="1">1.0x</option>
+          <option value="0.8">0.8x</option>
+          <option value="0.7">0.7x (Chậm)</option>
+        </select>
+        <!-- Import JSON button -->
+        <label class="cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-300 p-1.5 px-2 rounded-lg text-xs font-semibold text-slate-700 flex items-center gap-1 transition" title="Nhập dữ liệu JSON khác">
+          <i class="ph-bold ph-upload-simple"></i>
+          <span class="hidden md:inline">Nạp JSON</span>
+          <input accept=".json" class="hidden" id="json-file-input" onchange="handleFileUpload(event)" type="file" />
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-4 py-6 w-full flex-1 flex flex-col">
+    <!-- Day / Unit Selector & Tabs -->
+    <div class="flex flex-col md:flex-row gap-3 md:items-center justify-between mb-5">
+      <!-- Mode Tabs -->
+      <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 scrollbar-none">
+        <button class="mode-tab active px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm" id="tab-quiz_zh_vi" onclick="switchMode('quiz_zh_vi')">
+          <i class="ph-bold ph-translate"></i> Trung ➔ Việt
+        </button>
+        <button class="mode-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" id="tab-quiz_vi_zh" onclick="switchMode('quiz_vi_zh')">
+          <i class="ph-bold ph-arrows-left-right"></i> Việt ➔ Trung
+        </button>
+        <button class="mode-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" id="tab-quiz_listen" onclick="switchMode('quiz_listen')">
+          <i class="ph-bold ph-speaker-high"></i> Nghe &amp; Chọn
+        </button>
+        <button class="mode-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" id="tab-flashcard" onclick="switchMode('flashcard')">
+          <i class="ph-bold ph-cards"></i> Flashcard 3D
+        </button>
+        <button class="mode-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200" id="tab-wordlist" onclick="switchMode('wordlist')">
+          <i class="ph-bold ph-books"></i> Danh Sách (<span id="total-badge-tab">100</span>)
+        </button>
+      </div>
+
+      <!-- Day / Chunk Selector Dropdown -->
+      <div class="flex items-center gap-2 self-start md:self-auto bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs">
+        <i class="ph-bold ph-calendar text-indigo-600"></i>
+        <label class="text-xs font-semibold text-slate-600" for="day-select">Phạm vi ôn:</label>
+        <select class="text-xs font-bold text-indigo-700 bg-transparent outline-none cursor-pointer" id="day-select" onchange="changeStudyScope()">
+          <option value="all">Toàn bộ 100 từ</option>
+          <option selected="" value="day1">Ngày 1 (Từ 01 - 20)</option>
+          <option value="day2">Ngày 2 (Từ 21 - 40)</option>
+          <option value="day3">Ngày 3 (Từ 41 - 60)</option>
+          <option value="day4">Ngày 4 (Từ 61 - 80)</option>
+          <option value="day5">Ngày 5 (Từ 81 - 100)</option>
+          <option value="starred">Chỉ các từ Đã Đánh Dấu ⭐</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 1. QUIZ VIEW -->
+    <section class="w-full max-w-2xl mx-auto flex-1 flex flex-col justify-center" id="quiz-view">
+      <div class="flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-2 font-medium">
+        <span id="quiz-progress-text">Câu 1 / 10</span>
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1.5 cursor-pointer select-none">
+            <input checked="" class="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4" id="toggle-pinyin-quiz" onchange="togglePinyinVisibility()" type="checkbox" />
+            <span class="text-xs">Hiện Pinyin</span>
+          </label>
+          <span class="text-indigo-600 font-semibold" id="quiz-accuracy-text">Đúng: 100%</span>
+        </div>
+      </div>
+      <div class="w-full bg-slate-200 rounded-full h-2 mb-6 overflow-hidden">
+        <div class="bg-indigo-600 h-2 rounded-full transition-all duration-300 w-0" id="quiz-progress-bar"></div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs relative text-center mb-6">
+        <button class="absolute top-4 right-4 p-2.5 rounded-full text-slate-400 hover:text-amber-500 hover:bg-amber-50 transition" id="star-btn-quiz" onclick="toggleCurrentWordStar()" title="Lưu vào sổ tay từ khó">
+          <i class="ph-bold ph-star text-2xl" id="star-quiz-icon"></i>
+        </button>
+
+        <div class="inline-block px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-semibold uppercase tracking-wider mb-3" id="quiz-prompt-type">
+          HSK 5
+        </div>
+
+        <div class="min-h-[100px] flex flex-col items-center justify-center">
+          <div class="font-hanzi text-4xl sm:text-5xl font-black text-slate-900 tracking-wider" id="quiz-question-main">
+            --
+          </div>
+          <div class="text-indigo-600 font-semibold text-lg sm:text-xl mt-2 flex items-center gap-2" id="quiz-question-sub">
+            <span>--</span>
+          </div>
+          <button class="mt-3 p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full transition inline-flex items-center gap-1.5 px-3 text-xs font-medium" id="quiz-prompt-speech" onclick="speakCurrentQuestion()">
+            <i class="ph-fill ph-speaker-high text-base"></i> Phát âm
+          </button>
+        </div>
+      </div>
+
+      <!-- Options -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mb-5" id="quiz-options-grid"></div>
+
+      <!-- Feedback Details -->
+      <div class="hidden rounded-xl p-4 sm:p-5 border transition-all duration-300 mb-4 text-left" id="quiz-feedback-box">
+        <div class="flex items-start gap-3">
+          <div class="text-2xl mt-0.5" id="feedback-icon"></div>
+          <div class="flex-1">
+            <h4 class="font-bold text-base mb-1" id="feedback-title"></h4>
+            <div class="text-sm space-y-1" id="feedback-details"></div>
+            <div class="mt-3 pt-3 border-t border-slate-200/60 text-xs sm:text-sm bg-white/70 p-3 rounded-lg" id="feedback-example-container">
+              <div class="flex items-center justify-between font-hanzi text-base font-bold text-slate-800">
+                <span id="feedback-example-zh"></span>
+                <button class="text-indigo-600 hover:text-indigo-800 p-1" onclick="speakExampleSentence()" title="Nghe câu ví dụ">
+                  <i class="ph-fill ph-speaker-high text-lg"></i>
+                </button>
+              </div>
+              <p class="text-slate-600 mt-1 italic" id="feedback-example-vi"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Next Button -->
+      <button class="hidden w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md shadow-indigo-100 transition flex items-center justify-center gap-2 text-base" id="quiz-next-btn" onclick="nextQuestion()">
+        <span>Tiếp theo</span>
+        <i class="ph-bold ph-arrow-right"></i>
+      </button>
+    </section>
+
+    <!-- 2. FLASHCARD VIEW -->
+    <section class="w-full max-w-xl mx-auto flex-1 flex-col items-center justify-center hidden" id="flashcard-view">
+      <div class="w-full flex items-center justify-between text-xs sm:text-sm text-slate-500 mb-3 font-medium">
+        <span id="card-index-indicator">Thẻ 1 / 20</span>
+        <span class="text-slate-400">Chạm thẻ hoặc bấm Phím Cách để lật</span>
+      </div>
+
+      <div class="w-full h-84 sm:h-96 perspective-1000 cursor-pointer select-none" onclick="flipCard()">
+        <div class="relative w-full h-full duration-500 transform-style-preserve-3d transition-transform rounded-3xl shadow-lg border border-slate-200 bg-white" id="flashcard-inner">
+          <!-- Front Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden rounded-3xl p-6 sm:p-8 flex flex-col justify-between items-center text-center bg-white border border-slate-100">
+            <div class="w-full flex justify-between items-center">
+              <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full" id="fc-pos">Động từ</span>
+              <button class="text-slate-400 hover:text-amber-500 transition text-2xl" id="fc-star-btn" onclick="event.stopPropagation(); toggleFlashcardStar()">
+                <i class="ph-bold ph-star" id="fc-star-icon"></i>
+              </button>
+            </div>
+
+            <div class="my-auto">
+              <div class="font-hanzi text-5xl sm:text-6xl font-black text-slate-900 tracking-widest" id="fc-hanzi">--</div>
+              <div class="text-indigo-600 text-xl sm:text-2xl font-semibold mt-3" id="fc-pinyin">--</div>
+              <div class="text-xs uppercase tracking-widest text-slate-400 font-bold mt-1" id="fc-hanviet">--</div>
+            </div>
+
+            <div class="w-full flex justify-between items-center text-xs text-slate-400">
+              <span class="flex items-center gap-1"><i class="ph-bold ph-arrows-clockwise"></i> Chạm lật nghĩa</span>
+              <button class="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-full transition flex items-center gap-1 font-semibold text-xs px-3" onclick="event.stopPropagation(); speakFlashcardWord()">
+                <i class="ph-fill ph-speaker-high text-base"></i> Phát âm
+              </button>
+            </div>
+          </div>
+
+          <!-- Back Face -->
+          <div class="absolute inset-0 w-full h-full backface-hidden rotate-y-180 rounded-3xl p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-br from-indigo-50/40 to-white border border-indigo-100">
+            <div>
+              <div class="text-xs font-semibold uppercase text-indigo-600 tracking-wider mb-1">Ý nghĩa tiếng Việt</div>
+              <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug" id="fc-vietnamese">--</h3>
+            </div>
+
+            <div class="bg-white/90 p-4 rounded-2xl border border-slate-200/80 my-auto text-left shadow-xs">
+              <div class="flex items-center justify-between text-xs text-indigo-600 font-semibold mb-1">
+                <span>CÂU VÍ DỤ:</span>
+                <button class="text-indigo-600 hover:text-indigo-800 p-1" onclick="event.stopPropagation(); speakFlashcardExample()" title="Phát âm câu ví dụ">
+                  <i class="ph-fill ph-speaker-high text-base"></i>
+                </button>
+              </div>
+              <div class="font-hanzi text-base sm:text-lg text-slate-900 font-medium" id="fc-example-zh">--</div>
+              <div class="text-xs sm:text-sm text-slate-600 italic mt-1.5" id="fc-example-vi">--</div>
+            </div>
+
+            <div class="text-center text-xs text-slate-400 flex items-center justify-center gap-1">
+              <i class="ph-bold ph-arrow-counter-clockwise"></i> Chạm để quay lại mặt chữ Hán
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nav controls -->
+      <div class="flex items-center justify-center gap-4 mt-6 w-full">
+        <button class="p-3 px-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition flex items-center gap-1.5 font-semibold text-sm" onclick="prevFlashcard()">
+          <i class="ph-bold ph-caret-left text-lg"></i> Trước
+        </button>
+        <button class="p-3 px-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition" onclick="shuffleFlashcards()" title="Xáo trộn ngẫu nhiên">
+          <i class="ph-bold ph-shuffle text-lg"></i>
+        </button>
+        <button class="p-3 px-4 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-700 transition flex items-center gap-1.5 font-semibold text-sm shadow-md shadow-indigo-100" onclick="nextFlashcard()">
+          Tiếp <i class="ph-bold ph-caret-right text-lg"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 3. WORDLIST VIEW -->
+    <section class="w-full max-w-4xl mx-auto flex-1 flex-col hidden" id="wordlist-view">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs mb-4 flex flex-col sm:flex-row gap-3 items-center justify-between">
+        <div class="relative w-full sm:w-80">
+          <i class="ph-bold ph-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"></i>
+          <input class="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" id="search-word-input" oninput="filterWordList()" placeholder="Tìm Hán tự, Pinyin, nghĩa..." type="text" />
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white" id="filter-all-btn" onclick="setWordListFilter('all')">
+            Đang hiển thị (<span id="current-scope-count">20</span>)
+          </button>
+          <button class="flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1" id="filter-star-btn" onclick="setWordListFilter('starred')">
+            <i class="ph-fill ph-star text-amber-500"></i> Sổ tay sao (<span id="starred-words-badge">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 overflow-y-auto max-h-[68vh] pr-1" id="wordlist-container"></div>
+    </section>
+
+    <!-- 4. RESULTS VIEW -->
+    <section class="w-full max-w-md mx-auto flex-1 flex flex-col items-center justify-center text-center hidden" id="results-view">
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-lg w-full">
+        <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-3xl mx-auto flex items-center justify-center text-4xl mb-4" id="result-icon">
+          🎉
+        </div>
+        <h2 class="text-2xl font-black text-slate-900 mb-1" id="result-headline">Tuyệt Vời!</h2>
+        <p class="text-slate-500 text-sm mb-6" id="result-subtext">Bạn đã hoàn thành phiên luyện từ hôm nay.</p>
+
+        <div class="grid grid-cols-3 gap-2 bg-slate-50 p-4 rounded-2xl mb-6 border border-slate-100">
+          <div>
+            <div class="text-xs text-slate-400 font-semibold">Điểm</div>
+            <div class="text-xl font-bold text-slate-800 mt-0.5" id="res-score">0/10</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold">Tỷ lệ đúng</div>
+            <div class="text-xl font-bold text-indigo-600 mt-0.5" id="res-accuracy">0%</div>
+          </div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold">Chuỗi cao nhất</div>
+            <div class="text-xl font-bold text-amber-500 mt-0.5" id="res-max-streak">0</div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <button class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md shadow-indigo-100 transition" onclick="restartQuizWithSameMode()">
+            Luyện tiếp vòng nữa
+          </button>
+          <button class="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition" onclick="switchMode('flashcard')">
+            Chuyển qua lật Flashcard
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    /* Kho dữ liệu 100 Từ Vựng HSK 5 cốt lõi tích hợp sẵn */
+    const DEFAULT_100_WORDS = [
+      {"id":1,"hanzi":"缓解","pinyin":"huǎnjiě","hanviet":"Hoãn giải","type":"Động từ","meaning":"Làm dịu, xoa dịu, giảm bớt (căng thẳng, đau đớn)","example_zh":"听轻音乐可以有效缓解工作压力。","example_vi":"Nghe nhạc nhẹ có thể xoa dịu áp lực công việc một cách hiệu quả."},
+      {"id":2,"hanzi":"逻辑","pinyin":"luójí","hanviet":"La tập","type":"Danh từ","meaning":"Logic, tính mạch lạc, quy luật tư duy","example_zh":"他的发言很有逻辑性，令人信服。","example_vi":"Bài phát biểu của anh ấy tính logic rất cao, khiến người ta thuyết phục."},
+      {"id":3,"hanzi":"具备","pinyin":"jùbèi","hanviet":"Cụ bị","type":"Động từ","meaning":"Có đủ, sở hữu (điều kiện, tư cách, tố chất)","example_zh":"他已经具备了一个优秀管理者应有的素质。","example_vi":"Anh ấy đã hội tụ đủ phẩm chất cần có của một nhà quản lý xuất sắc."},
+      {"id":4,"hanzi":"耽误","pinyin":"dānwu","hanviet":"Đam ngộ","type":"Động từ","meaning":"Làm chậm trễ, lỡ dở (thời gian, công việc)","example_zh":"别再玩手机了，免得耽误了正事。","example_vi":"Đừng nghịch điện thoại nữa, kẻo làm trễ nải việc chính."},
+      {"id":5,"hanzi":"佩服","pinyin":"pèifú","hanviet":"Bội phục","type":"Động từ","meaning":"Khâm phục, ngưỡng mộ, nể trọng","example_zh":"大家都很佩服她坚持不懈的精神。","example_vi":"Mọi người đều vô cùng khâm phục tinh thần kiên trì bền bỉ của cô ấy."},
+      {"id":6,"hanzi":"哪怕","pinyin":"nǎpà","hanviet":"Nả phạ","type":"Liên từ","meaning":"Cho dù, dù cho (nhượng bộ giả thiết)","example_zh":"哪怕遇到再大的困难，我们也不轻言放弃。","example_vi":"Cho dù gặp phải khó khăn lớn đến đâu, chúng ta cũng không dễ dàng từ bỏ."},
+      {"id":7,"hanzi":"掌握","pinyin":"zhǎngwò","hanviet":"Chưởng ác","type":"Động từ","meaning":"Nắm vững, làm chủ (kiến thức, kĩ năng)","example_zh":"学好一门外语需要掌握大量的核心词汇。","example_vi":"Học giỏi một ngoại ngữ cần phải nắm vững lượng lớn từ vựng cốt lõi."},
+      {"id":8,"hanzi":"本质","pinyin":"běnzhì","hanviet":"Bản chất","type":"Danh từ","meaning":"Bản chất, thuộc tính bên trong","example_zh":"看问题不能只看表面，要看本质。","example_vi":"Xem xét vấn đề không thể chỉ nhìn bề ngoài, phải nhìn vào bản chất."},
+      {"id":9,"hanzi":"珍惜","pinyin":"zhēnxī","hanviet":"Trân tích","type":"Động từ","meaning":"Trân trọng, quý trọng, nâng niu","example_zh":"我们应该珍惜现在的和平与幸福生活。","example_vi":"Chúng ta nên trân quý cuộc sống hòa bình và hạnh phúc hiện tại."},
+      {"id":10,"hanzi":"咨询","pinyin":"zīxún","hanviet":"Tư vấn","type":"Động từ","meaning":"Tư vấn, tham vấn ý kiến chuyên môn","example_zh":"如果有任何法律疑问，请随时咨询律师。","example_vi":"Nếu có bất kỳ thắc mắc pháp lý nào, xin hãy tư vấn luật sư bất cứ lúc nào."},
+      {"id":11,"hanzi":"趋势","pinyin":"qūshì","hanviet":"Xu thế","type":"Danh từ","meaning":"Xu hướng, xu thế phát triển","example_zh":"人工智能已经成为全球科技发展的大趋势。","example_vi":"Trí tuệ nhân tạo đã trở thành xu thế lớn trong phát triển công nghệ toàn cầu."},
+      {"id":12,"hanzi":"讽刺","pinyin":"fěngcì","hanviet":"Phúng thích","type":"Động từ","meaning":"Châm biếm, mỉa mai, giễu cợt","example_zh":"这部小说讽刺了那些虚伪贪婪的人。","example_vi":"Cuốn tiểu thuyết này đã châm biếm những kẻ đạo đức giả và tham lam."},
+      {"id":13,"hanzi":"格外","pinyin":"géwài","hanviet":"Cách ngoại","type":"Phó từ","meaning":"Đặc biệt, hết sức, vô cùng (hơn bình thường)","example_zh":"雨后的空气显得格外清新。","example_vi":"Không khí sau cơn mưa có vẻ trong lành đặc biệt."},
+      {"id":14,"hanzi":"广泛","pinyin":"guǎngfàn","hanviet":"Quảng phiếm","type":"Tính từ","meaning":"Rộng rãi, phổ biến, phạm vi rộng","example_zh":"这种新型环保材料受到了广泛的关注与好评。","example_vi":"Loại vật liệu bảo vệ môi trường mới này nhận được sự chú ý rộng rãi và đánh giá cao."},
+      {"id":15,"hanzi":"效率","pinyin":"xiàolǜ","hanviet":"Hiệu suất","type":"Danh từ","meaning":"Hiệu suất, năng suất làm việc","example_zh":"合理的时间管理能够大幅提高学习效率。","example_vi":"Quản lý thời gian hợp lý có thể nâng cao đáng kể hiệu suất học tập."},
+      {"id":16,"hanzi":"遗憾","pinyin":"yíhàn","hanviet":"Di hám","type":"Tính từ","meaning":"Đáng tiếc, hối tiếc, nỗi tiếc nuối","example_zh":"错过了这场精彩的音乐会真是太遗憾了。","example_vi":"Bỏ lỡ buổi hòa nhạc tuyệt vời này thật sự quá đáng tiếc."},
+      {"id":17,"hanzi":"承担","pinyin":"chéngdān","hanviet":"Thừa đảm","type":"Động từ","meaning":"Gánh vác, đảm đương, chịu trách nhiệm","example_zh":"成年人应当勇敢承担自己的行为后果。","example_vi":"Người trưởng thành nên dũng cảm gánh vác hậu quả hành vi của mình."},
+      {"id":18,"hanzi":"导致","pinyin":"dǎozhì","hanviet":"Đạo trí","type":"Động từ","meaning":"Dẫn đến, gây nên (kết quả không mong muốn)","example_zh":"不良的饮食习惯会导致身体免疫力下降。","example_vi":"Thói quen ăn uống xấu sẽ dẫn đến khả năng miễn dịch của cơ thể suy giảm."},
+      {"id":19,"hanzi":"临时","pinyin":"línshí","hanviet":"Lâm thời","type":"Tính từ","meaning":"Tạm thời, lâm thời, nhất thời","example_zh":"会议因突发事件临时决定改在明天举行。","example_vi":"Cuộc họp do sự cố đột xuất đã tạm thời quyết định lùi sang ngày mai."},
+      {"id":20,"hanzi":"彼此","pinyin":"bǐcǐ","hanviet":"Bỉ thử","type":"Đại từ","meaning":"Lẫn nhau, đôi bên, hai phía","example_zh":"朋友之间应该多一份信任与包容。","example_vi":"Bạn bè với nhau nên có thêm sự tin tưởng và bao dung lẫn nhau."},
+      {"id":21,"hanzi":"深刻","pinyin":"shēnkè","hanviet":"Thâm khắc","type":"Tính từ","meaning":"Sâu sắc, thấu đáo, in đậm","example_zh":"这部电影给我留下了极其深刻的印象。","example_vi":"Bộ phim này để lại cho tôi ấn tượng vô cùng sâu sắc."},
+      {"id":22,"hanzi":"灵活","pinyin":"línghuó","hanviet":"Linh hoạt","type":"Tính từ","meaning":"Linh hoạt, nhạy bén, uyển chuyển","example_zh":"面对突发状况，我们要灵活应对。","example_vi":"Đối mặt với tình huống bất ngờ, chúng ta phải linh hoạt ứng biến."},
+      {"id":23,"hanzi":"坦率","pinyin":"tǎnshuài","hanviet":"Thản suất","type":"Tính từ","meaning":"Thẳng thắn, bộc trực, không vòng vo","example_zh":"他坦率地指出了我们方案中的缺点。","example_vi":"Anh ấy đã thẳng thắn chỉ ra những điểm còn thiếu sót trong đề án của chúng tôi."},
+      {"id":24,"hanzi":"克服","pinyin":"kèfú","hanviet":"Khắc phục","type":"Động từ","meaning":"Khắc phục, vượt qua (khó khăn, chướng ngại)","example_zh":"只要有恒心，一切困难都可以被克服。","example_vi":"Chỉ cần có lòng kiên trì, mọi khó khăn đều có thể khắc phục được."},
+      {"id":25,"hanzi":"推荐","pinyin":"tuījiàn","hanviet":"Thôi tiến","type":"Động từ","meaning":"Tiến cử, giới thiệu khuyên dùng","example_zh":"老师向我们推荐了几本经典的书籍。","example_vi":"Thầy giáo đã giới thiệu cho chúng tôi vài cuốn sách kinh điển."},
+      {"id":26,"hanzi":"究竟","pinyin":"jiūjìng","hanviet":"Cứu cánh","type":"Phó từ","meaning":"Rốt cuộc, cuối cùng thì (nhấn mạnh nghi vấn)","example_zh":"这件事究竟是谁的责任呢？","example_vi":"Chuyện này rốt cuộc là trách nhiệm của ai chứ?"},
+      {"id":27,"hanzi":"待遇","pinyin":"dàiyù","hanviet":"Đãi ngộ","type":"Danh từ","meaning":"Chế độ đãi ngộ, tiền lương và quyền lợi","example_zh":"这家公司的福利待遇非常优厚。","example_vi":"Chế độ đãi ngộ và phúc lợi của công ty này vô cùng hậu hĩnh."},
+      {"id":28,"hanzi":"吸收","pinyin":"xīshōu","hanviet":"Hấp thu","type":"Động từ","meaning":"Hấp thu, tiếp thu (dinh dưỡng, tri thức)","example_zh":"读书能帮助我们吸收新知识，拓宽视野。","example_vi":"Đọc sách giúp chúng ta tiếp thu tri thức mới, mở rộng tầm nhìn."},
+      {"id":29,"hanzi":"繁荣","pinyin":"fánróng","hanviet":"Phồn vinh","type":"Tính từ","meaning":"Phồn vinh, hưng thịnh, sầm uất","example_zh":"经济的快速增长促进了商业的繁荣。","example_vi":"Sự tăng trưởng kinh tế nhanh chóng đã thúc đẩy sự phồn vinh thương mại."},
+      {"id":30,"hanzi":"谦虚","pinyin":"qiānxū","hanviet":"Khiêm hư","type":"Tính từ","meaning":"Khiêm tốn, nhún nhường","example_zh":"即便取得了很大成功，他也依然保持谦虚。","example_vi":"Ngay cả khi đã đạt được thành công lớn, anh ấy vẫn luôn giữ thái độ khiêm tốn."},
+      {"id":31,"hanzi":"比例","pinyin":"bǐlì","hanviet":"Tỉ lệ","type":"Danh từ","meaning":"Tỉ lệ, tương quan số lượng","example_zh":"这项投资的收益与风险成正比例。","example_vi":"Lợi nhuận của khoản đầu tư này tỉ lệ thuận với mức độ rủi ro."},
+      {"id":32,"hanzi":"措施","pinyin":"cuòshī","hanviet":"Biện pháp","type":"Danh từ","meaning":"Biện pháp, giải pháp hành động cụ thể","example_zh":"政府已经采取了有力措施来控制物价。","example_vi":"Chính phủ đã áp dụng các biện pháp quyết liệt để kiểm soát giá cả."},
+      {"id":33,"hanzi":"独特","pinyin":"dútè","hanviet":"Độc đặc","type":"Tính từ","meaning":"Độc đáo, khác biệt, đặc sắc riêng","example_zh":"这座古建筑具有非常独特的民族风格。","example_vi":"Tòa kiến trúc cổ này mang phong cách dân tộc vô cùng độc đáo."},
+      {"id":34,"hanzi":"佩戴","pinyin":"pèidài","hanviet":"Bội đới","type":"Động từ","meaning":"Đeo, mang (khẩu trang, huân chương, trang sức)","example_zh":"出入公共场所请自觉佩戴好口罩。","example_vi":"Khi ra vào nơi công cộng xin hãy tự giác đeo khẩu trang cẩn thận."},
+      {"id":35,"hanzi":"充分","pinyin":"chōngfèn","hanviet":"Sung phân","type":"Tính từ","meaning":"Đầy đủ, dồi dào, chu đáo (chuẩn bị, lý do)","example_zh":"经过充分的准备，我们赢得了比赛。","example_vi":"Nhờ sự chuẩn bị chu đáo và đầy đủ, chúng tôi đã thắng trận thi đấu."},
+      {"id":36,"hanzi":"坚决","pinyin":"jiānjué","hanviet":"Kiên quyết","type":"Tính từ","meaning":"Kiên quyết, dứt khoát không nao núng","example_zh":"我们坚决反对任何破坏环境的行为。","example_vi":"Chúng tôi kiên quyết phản đối bất kỳ hành vi phá hoại môi trường nào."},
+      {"id":37,"hanzi":"彼此","pinyin":"bǐcǐ","hanviet":"Bỉ thử","type":"Đại từ","meaning":"Lẫn nhau, bên này bên kia","example_zh":"大家彼此关照，团队才会更融洽。","example_vi":"Mọi người quan tâm chăm sóc lẫn nhau thì tập thể mới hòa thuận hơn."},
+      {"id":38,"hanzi":"从而","pinyin":"cóng'ér","hanviet":"Tùng nhi","type":"Liên từ","meaning":"Từ đó, nhờ vậy mà (dẫn ra kết quả tiếp theo)","example_zh":"他坚持跑步锻炼，从而增强了体质。","example_vi":"Anh ấy kiên trì chạy bộ rèn luyện, nhờ vậy mà nâng cao thể chất."},
+      {"id":39,"hanzi":"核心","pinyin":"héxīn","hanviet":"Hạch tâm","type":"Danh từ","meaning":"Cốt lõi, trọng tâm, nhân tố cốt tử","example_zh":"技术创新是企业核心竞争力的来源。","example_vi":"Đổi mới kỹ thuật là nguồn gốc tạo nên sức cạnh tranh cốt lõi của doanh nghiệp."},
+      {"id":40,"hanzi":"忽视","pinyin":"hūshì","hanviet":"Hốt thị","type":"Động từ","meaning":"Bỏ qua, lơ là, không chú ý tới","example_zh":"在追求速度的同时，决不能忽视产品质量。","example_vi":"Trong khi theo đuổi tốc độ, tuyệt đối không được xem nhẹ chất lượng sản phẩm."},
+      {"id":41,"hanzi":"面临","pinyin":"miànlín","hanviet":"Diện lâm","type":"Động từ","meaning":"Đối mặt, đứng trước (nguy cơ, thử thách)","example_zh":"我们目前正面临着巨大的市场竞争压力。","example_vi":"Hiện tại chúng ta đang đối mặt với áp lực cạnh tranh thị trường vô cùng lớn."},
+      {"id":42,"hanzi":"破坏","pinyin":"pòhuài","hanviet":"Phá hoại","type":"Động từ","meaning":"Làm hư hại, phá vỡ, làm hỏng","example_zh":"工业污染严重破坏了当地的生态平衡。","example_vi":"Ô nhiễm công nghiệp đã phá hoại nghiêm trọng sự cân bằng sinh thái địa phương."},
+      {"id":43,"hanzi":"强烈","pinyin":"qiángliè","hanviet":"Cường liệt","type":"Tính từ","meaning":"Mãnh liệt, kịch liệt, dữ dội","example_zh":"地震发生时，地面产生了强烈的晃动。","example_vi":"Khi động đất xảy ra, mặt đất rung lắc dữ dội."},
+      {"id":44,"hanzi":"缺乏","pinyin":"quēfá","hanviet":"Khuyết phạp","type":"Động từ","meaning":"Thiếu hụt, không có đủ (kinh nghiệm, vốn)","example_zh":"很多年轻人不是没有能力，而是缺乏实践经验。","example_vi":"Rất nhiều người trẻ không phải không có năng lực, mà là thiếu kinh nghiệm thực tiễn."},
+      {"id":45,"hanzi":"日夜","pinyin":"rìyè","hanviet":"Nhật dạ","type":"Phó từ","meaning":"Ngày đêm, không quản ngày đêm","example_zh":"工人们日夜奋战，终于按时完成了大桥工程。","example_vi":"Các công nhân ngày đêm dốc sức, cuối cùng đã hoàn thành công trình cầu đúng hạn."},
+      {"id":46,"hanzi":"所谓","pinyin":"suǒwèi","hanviet":"Sở vị","type":"Tính từ","meaning":"Cái gọi là, điều mà người ta hay nói","example_zh":"所谓成功，不过是一次次跌倒后再站起来。","example_vi":"Cái gọi là thành công, chẳng qua là đứng dậy sau từng lần vấp ngã."},
+      {"id":47,"hanzi":"维护","pinyin":"wéihù","hanviet":"Duy hộ","type":"Động từ","meaning":"Duy trì, giữ gìn, bảo vệ (hòa bình, quyền lợi)","example_zh":"我们必须坚决维护国家的尊严与合法权益。","example_vi":"Chúng ta phải kiên quyết bảo vệ tôn nghiêm và quyền lợi hợp pháp của quốc gia."},
+      {"id":48,"hanzi":"享受","pinyin":"xiǎngshòu","hanviet":"Hưởng thụ","type":"Động từ","meaning":"Tận hưởng, hưởng thụ niềm vui hay quyền lợi","example_zh":"周末坐在海边看日落真是一种美好的享受。","example_vi":"Cuối tuần ngồi ngắm hoàng hôn bên bờ biển thực sự là một trải nghiệm tận hưởng tuyệt vời."},
+      {"id":49,"hanzi":"虚拟","pinyin":"xūnǐ","hanviet":"Hư nghĩ","type":"Tính từ","meaning":"Ảo, mô phỏng (trong thế giới số)","example_zh":"网络虽然是虚拟世界，但也需要遵守道德规范。","example_vi":"Mạng internet tuy là thế giới ảo nhưng cũng cần tuân thủ quy chuẩn đạo đức."},
+      {"id":50,"hanzi":"严肃","pinyin":"yánsù","hanviet":"Nghiêm túc","type":"Tính từ","meaning":"Nghiêm nghị, trang nghiêm, nghiêm túc","example_zh":"看到他严肃的表情，大家都不敢随便开玩笑了。","example_vi":"Nhìn vẻ mặt nghiêm nghị của anh ấy, mọi người đều không dám đùa cợt bừa bãi."},
+      {"id":51,"hanzi":"争取","pinyin":"zhēngqǔ","hanviet":"Tranh thủ","type":"Động từ","meaning":"Tranh thủ, phấn đấu giành lấy","example_zh":"我们要尽全力争取这次宝贵的外派学习机会。","example_vi":"Chúng ta phải dốc hết sức phấn đấu giành lấy cơ hội cử đi học quý báu lần này."},
+      {"id":52,"hanzi":"主张","pinyin":"zhǔzhāng","hanviet":"Chủ trương","type":"Động từ","meaning":"Chủ trương, quan điểm, đề xướng","example_zh":"学校一向主张培养学生的全面综合素质。","example_vi":"Nhà trường xưa nay luôn chủ trương bồi dưỡng tố chất toàn diện cho học sinh."},
+      {"id":53,"hanzi":"包含","pinyin":"bāohán","hanviet":"Bao hàm","type":"Động từ","meaning":"Chứa đựng, bao hàm, có trong đó","example_zh":"这首古诗里包含了作者深深的思乡之情。","example_vi":"Bài thơ cổ này chứa đựng nỗi nhớ quê hương sâu sắc của tác giả."},
+      {"id":54,"hanzi":"毕竟","pinyin":"bìjìng","hanviet":"Tất cánh","type":"Phó từ","meaning":"Dẫu sao thì, rốt cuộc thì","example_zh":"别太怪孩子了，他毕竟还年纪小。","example_vi":"Đừng trách đứa trẻ quá mức, dẫu sao cháu nó vẫn còn nhỏ tuổi."},
+      {"id":55,"hanzi":"采用","pinyin":"cǎiyòng","hanviet":"Thải dụng","type":"Động từ","meaning":"Áp dụng, tiếp thu dùng (phương pháp, công nghệ)","example_zh":"新项目采用了最新的数字化管理软件。","example_vi":"Dự án mới đã áp dụng phần mềm quản lý số hóa tiên tiến nhất."},
+      {"id":56,"hanzi":"测验","pinyin":"cèyàn","hanviet":"Trắc nghiệm","type":"Động từ","meaning":"Kiểm tra, trắc nghiệm đánh giá","example_zh":"明天的汉语课上将进行一次听力测验。","example_vi":"Tiết học tiếng Trung ngày mai sẽ tiến hành một bài kiểm tra nghe."},
+      {"id":57,"hanzi":"尝试","pinyin":"chángshì","hanviet":"Thường thí","type":"Động từ","meaning":"Thử nghiệm, làm thử, mạnh dạn trải nghiệm","example_zh":"面对未知领域，要勇敢进行各种尝试。","example_vi":"Đối diện với lĩnh vực chưa biết, hãy dũng cảm thực hiện mọi sự thử sức."},
+      {"id":58,"hanzi":"彻底","pinyin":"chèdǐ","hanviet":"Triệt để","type":"Tính từ","meaning":"Triệt để, tận gốc, hoàn toàn","example_zh":"我们必须把这个问题彻底调查清楚。","example_vi":"Chúng ta phải điều tra làm rõ vấn đề này một cách triệt để."},
+      {"id":59,"hanzi":"沉默","pinyin":"chénmò","hanviet":"Trầm mặc","type":"Tính từ","meaning":"Im lặng, trầm mặc, không nói năng","example_zh":"开会时他一直保持沉默，没有发表任何观点。","example_vi":"Lúc họp anh ấy luôn giữ im lặng, không đưa ra bất kỳ quan điểm nào."},
+      {"id":60,"hanzi":"称赞","pinyin":"chēngzàn","hanviet":"Xưng tán","type":"Động từ","meaning":"Khen ngợi, ca ngợi, tán thưởng","example_zh":"客人们对餐厅周到的服务连连称赞。","example_vi":"Các thực khách không ngớt lời khen ngợi cung cách phục vụ chu đáo của nhà hàng."},
+      {"id":61,"hanzi":"迟早","pinyin":"chízǎo","hanviet":"Trì tảo","type":"Phó từ","meaning":"Sớm muộn gì, trước sau gì cũng","example_zh":"只要付出辛勤的汗水，成功迟早会来临。","example_vi":"Chỉ cần đổ mồ hôi công sức, thành công sớm muộn gì cũng sẽ đến."},
+      {"id":62,"hanzi":"抽象","pinyin":"chōuxiàng","hanviet":"Trừu tượng","type":"Tính từ","meaning":"Trừu tượng, khó hình dung cụ thể","example_zh":"这个哲学概念太抽象了，大家很难一下子理解。","example_vi":"Khái niệm triết học này quá trừu tượng, mọi người rất khó hiểu ngay được."},
+      {"id":63,"hanzi":"促使","pinyin":"cùshǐ","hanviet":"Xúc sử","type":"Động từ","meaning":"Thúc đẩy, khiến cho, giục giã","example_zh":"强烈的求知欲促使他自学了多门编程语言。","example_vi":"Lòng ham học hỏi mãnh liệt đã thôi thúc anh ấy tự học nhiều ngôn ngữ lập trình."},
+      {"id":64,"hanzi":"单调","pinyin":"dāndiào","hanviet":"Đơn điệu","type":"Tính từ","meaning":"Đơn điệu, tẻ nhạt, trùng lặp","example_zh":"每天重复相同的工作难免会觉得枯燥单调。","example_vi":"Mỗi ngày lặp đi lặp lại công việc giống nhau khó tránh khỏi cảm giác khô khan, đơn điệu."},
+      {"id":65,"hanzi":"担任","pinyin":"dānrèn","hanviet":"Đảm nhiệm","type":"Động từ","meaning":"Đảm nhiệm, giữ chức vụ","example_zh":"他曾在一家跨国企业担任技术总监职务。","example_vi":"Anh ấy từng đảm nhiệm chức vụ giám đốc kỹ thuật tại một tập đoàn đa quốc gia."},
+      {"id":66,"hanzi":"等候","pinyin":"děnghòu","hanviet":"Đẳng hậu","type":"Động từ","meaning":"Chờ đợi, đợi chờ (trang trọng)","example_zh":"请各位旅客在候车室耐心配戴好口罩并等候检票。","example_vi":"Xin mời quý hành khách kiên nhẫn đợi soát vé trong phòng chờ."},
+      {"id":67,"hanzi":"动态","pinyin":"dòngtài","hanviet":"Động thái","type":"Danh từ","meaning":"Tình hình biến chuyển, diễn biến mới nhất","example_zh":"投资者必须时刻密切关注股市的最新动态。","example_vi":"Nhà đầu tư phải luôn theo dõi sát sao diễn biến mới nhất của thị trường chứng khoán."},
+      {"id":68,"hanzi":"独立","pinyin":"dúlì","hanviet":"Độc lập","type":"Tính từ","meaning":"Độc lập, tự chủ, không dựa dẫm","example_zh":"从小培养独立生活的能力对孩子的未来非常重要。","example_vi":"Nuôi dưỡng khả năng sống tự lập từ nhỏ cực kỳ quan trọng cho tương lai của trẻ."},
+      {"id":69,"hanzi":"对比","pinyin":"duìbǐ","hanviet":"Đối tỉ","type":"Động từ","meaning":"So sánh, đối chiếu, tương phản","example_zh":"通过数据对比，两家公司的差距一目了然。","example_vi":"Thông qua so sánh số liệu, khoảng cách giữa hai công ty rõ ràng ngay trước mắt."},
+      {"id":70,"hanzi":"对象","pinyin":"duìxiàng","hanviet":"Đối tượng","type":"Danh từ","meaning":"Đối tượng hướng tới (nghiên cứu, người yêu)","example_zh":"这套少儿读物的目标读者对象是小学生。","example_vi":"Đối tượng độc giả mục tiêu của bộ sách thiếu nhi này là học sinh tiểu học."},
+      {"id":71,"hanzi":"恶劣","pinyin":"èliè","hanviet":"Ác liệt","type":"Tính từ","meaning":"Tồi tệ, khắc nghiệt (thời tiết, hoàn cảnh)","example_zh":"由于恶劣的天气条件，所有航班都被迫延误了。","example_vi":"Do điều kiện thời tiết khắc nghiệt, toàn bộ các chuyến bay buộc phải hoãn."},
+      {"id":72,"hanzi":"发表","pinyin":"fābiǎo","hanviet":"Phát biểu","type":"Động từ","meaning":"Đăng tải, công bố, phát biểu (bài báo, ý kiến)","example_zh":"他在著名的科学期刊上发表了多篇学术论文。","example_vi":"Anh ấy đã công bố nhiều bài luận văn học thuật trên tạp chí khoa học nổi tiếng."},
+      {"id":73,"hanzi":"发挥","pinyin":"fāhuī","hanviet":"Phát huy","type":"Động từ","meaning":"Phát huy, thể hiện (tiềm năng, vai trò)","example_zh":"在考试中要保持平稳心态，充分发挥自己的水平。","example_vi":"Trong kỳ thi cần giữ tâm lý bình ổn để phát huy hết khả năng của bản thân."},
+      {"id":74,"hanzi":"反复","pinyin":"fǎnfù","hanviet":"Phản phúc","type":"Phó từ","meaning":"Nhiều lần, lặp đi lặp lại, tái diễn","example_zh":"这个问题我已经反复核实过好几遍了。","example_vi":"Vấn đề này tôi đã kiểm tra đối chiếu kỹ lưỡng lại nhiều lần rồi."},
+      {"id":75,"hanzi":"妨碍","pinyin":"fáng'ài","hanviet":"Phương ngại","type":"Động từ","meaning":"Gây cản trở, làm phiền, ảnh hưởng xấu","example_zh":"在图书馆里请不要大声喧哗，以免妨碍他人阅读。","example_vi":"Trong thư viện xin đừng làm ồn, tránh gây cản trở người khác đọc sách."},
+      {"id":76,"hanzi":"分布","pinyin":"fēnbù","hanviet":"Phân bố","type":"Động từ","meaning":"Phân bố, rải rác ở các khu vực","example_zh":"大熊猫主要分布在中国的四川、陕西等地。","example_vi":"Gấu trúc lớn phân bố chủ yếu ở Tứ Xuyên, Thiểm Tây của Trung Quốc."},
+      {"id":77,"hanzi":"分析","pinyin":"fēnxī","hanviet":"Phân tích","type":"Động từ","meaning":"Phân tích mổ xẻ vấn đề","example_zh":"我们要客观分析失败的具体原因，总结经验。","example_vi":"Chúng ta phải phân tích khách quan nguyên nhân thất bại cụ thể để đúc rút kinh nghiệm."},
+      {"id":78,"hanzi":"概括","pinyin":"gàikuò","hanviet":"Khái quát","type":"Động từ","meaning":"Khái quát, tóm tắt ý chính","example_zh":"请你用几句简短的话概括一下这篇文章的中心思想。","example_vi":"Xin bạn dùng vài câu ngắn gọn để khái quát tư tưởng trọng tâm của bài viết này."},
+      {"id":79,"hanzi":"沟通","pinyin":"gōutōng","hanviet":"Câu thông","type":"Động từ","meaning":"Giao tiếp, trao đổi thấu hiểu lẫn nhau","example_zh":"良好的沟通是解决人际矛盾最好的桥梁。","example_vi":"Giao tiếp thấu hiểu tốt là cây cầu tối ưu nhất để hóa giải mâu thuẫn giữa con người."},
+      {"id":80,"hanzi":"贡献","pinyin":"gòngxiàn","hanviet":"Cống hiến","type":"Động từ","meaning":"Đóng góp, cống hiến cho tập thể/xã hội","example_zh":"那位老科学家为国家的航天事业做出了巨大贡献。","example_vi":"Vị nhà khoa học lão thành đó đã cống hiến to lớn cho sự nghiệp hàng không vũ trụ của quốc gia."},
+      {"id":81,"hanzi":"规矩","pinyin":"guīju","hanviet":"Quy củ","type":"Danh từ","meaning":"Quy tắc, nề nếp, khuôn phép","example_zh":"无论在哪个行业工作，都必须遵守职业规矩。","example_vi":"Dù làm việc ở ngành nghề nào cũng đều phải tuân thủ quy tắc nghề nghiệp."},
+      {"id":82,"hanzi":"规模","pinyin":"guīmó","hanviet":"Quy mô","type":"Danh từ","meaning":"Quy mô, tầm vóc kích thước","example_zh":"随着业务不断拓展，公司的生产规模扩大了一倍。","example_vi":"Theo sự mở rộng không ngừng của nghiệp vụ, quy mô sản xuất của công ty đã tăng gấp đôi."},
+      {"id":83,"hanzi":"核心","pinyin":"héxīn","hanviet":"Hạch tâm","type":"Danh từ","meaning":"Cốt lõi, trung tâm hạt nhân","example_zh":"保护知识产权是激励创新的核心要素。","example_vi":"Bảo hộ quyền sở hữu trí tuệ là yếu tố cốt lõi để khích lệ sáng tạo."},
+      {"id":84,"hanzi":"横","pinyin":"héng","hanviet":"Hoành","type":"Tính từ","meaning":"Ngang, nằm ngang, chiều ngang","example_zh":"他在本子上画了一条水平的横线。","example_vi":"Cậu ấy vẽ một đường kẻ ngang bằng phẳng trên cuốn vở."},
+      {"id":85,"hanzi":"后果","pinyin":"hòuguǒ","hanviet":"Hậu quả","type":"Danh từ","meaning":"Hậu quả, kết cục tiêu cực sau hành động","example_zh":"酒后驾驶会造成极其严重的悲惨后果。","example_vi":"Lái xe sau khi uống rượu bia sẽ gây ra những hậu quả vô cùng thảm khốc."},
+      {"id":86,"hanzi":"积极","pinyin":"jījí","hanviet":"Tích cực","type":"Tính từ","meaning":"Tích cực, chủ động, hăng hái","example_zh":"面对生活中的挫折，我们应保持积极乐观的态度。","example_vi":"Trước những trắc trở trong cuộc sống, chúng ta nên giữ thái độ tích cực lạc quan."},
+      {"id":87,"hanzi":"集体","pinyin":"jítǐ","hanviet":"Tập thể","type":"Danh từ","meaning":"Tập thể, khối đoàn kết","example_zh":"这项令人骄傲的荣誉属于我们整个集体。","example_vi":"Danh hiệu vinh dự đáng tự hào này thuộc về toàn thể tập thể chúng ta."},
+      {"id":88,"hanzi":"集中","pinyin":"jízhōng","hanviet":"Tập trung","type":"Động từ","meaning":"Tập trung (tư tưởng, nhân lực, nguồn lực)","example_zh":"上课时一定要集中注意力听老师讲解。","example_vi":"Khi lên lớp nhất định phải tập trung chú ý nghe thầy cô giảng giải."},
+      {"id":89,"hanzi":"坚决","pinyin":"jiānjué","hanviet":"Kiên quyết","type":"Tính từ","meaning":"Kiên quyết, dứt khoát không lay chuyển","example_zh":"面对原则性问题，我们必须坚决表明立场。","example_vi":"Đứng trước vấn đề mang tính nguyên tắc, chúng ta phải kiên quyết bày tỏ lập trường."},
+      {"id":90,"hanzi":"结合","pinyin":"jiéhé","hanviet":"Kết hợp","type":"Động từ","meaning":"Kết hợp, lồng ghép vào nhau","example_zh":"只有把理论与实践紧密结合，才能真正学以致用。","example_vi":"Chỉ khi gắn kết chặt chẽ lý thuyết với thực tiễn thì mới thực sự học đi đôi với hành."},
+      {"id":91,"hanzi":"戒烟","pinyin":"jièyān","hanviet":"Giới yên","type":"Động từ","meaning":"Cai thuốc lá, bỏ hút thuốc","example_zh":"为了自己和家人的身体健康，他下决心戒烟了。","example_vi":"Vì sức khỏe của bản thân và gia đình, anh ấy đã hạ quyết tâm cai thuốc lá."},
+      {"id":92,"hanzi":"谨防","pinyin":"jǐnfáng","hanviet":"Cẩn phòng","type":"Động từ","meaning":"Đề phòng cẩn thận, cảnh giác với","example_zh":"年关将至，出入车站码头请谨防上当受骗。","example_vi":"Gần tết đến nơi, ra vào bến tàu xe xin hãy cẩn trọng đề phòng bị lừa gạt."},
+      {"id":93,"hanzi":"资格","pinyin":"zīgé","hanviet":"Tư cách","type":"Danh từ","meaning":"Tư cách, điều kiện tiêu chuẩn","example_zh":"他完全具备申请该奖学金的各项资格。","example_vi":"Anh ấy hoàn toàn hội tụ đủ các tư cách để ứng tuyển học bổng đó."},
+      {"id":94,"hanzi":"聚会","pinyin":"jùhuì","hanviet":"Tụ hội","type":"Động từ","meaning":"Gặp mặt, họp mặt, tụ tập","example_zh":"周末我们打算举办一次老同学聚会。","example_vi":"Cuối tuần này chúng tôi dự định tổ chức một buổi tụ họp bạn học cũ."},
+      {"id":95,"hanzi":"开发","pinyin":"kāifā","hanviet":"Khai phát","type":"Động từ","meaning":"Khai thác, phát triển (thị trường, tài nguyên, app)","example_zh":"技术团队正在全力开发一款多功能的移动软件。","example_vi":"Đội ngũ kỹ thuật đang dốc toàn lực phát triển một phần mềm di động đa chức năng."},
+      {"id":96,"hanzi":"开幕式","pinyin":"kāimùshì","hanviet":"Khai mạc thức","type":"Danh từ","meaning":"Lễ khai mạc","example_zh":"本届国际体育盛会的开幕式场面极其壮观。","example_vi":"Khung cảnh lễ khai mạc của ngày hội thể thao quốc tế kỳ này vô cùng hoành tráng."},
+      {"id":97,"hanzi":"客观","pinyin":"kèguān","hanviet":"Khách quan","type":"Tính từ","meaning":"Khách quan, không thiên vị cảm tính","example_zh":"做评价时，我们要尽量做到客观公正。","example_vi":"Khi đưa ra nhận xét, chúng ta phải cố gắng đạt được sự khách quan và công bằng."},
+      {"id":98,"hanzi":"控制","pinyin":"kòngzhì","hanviet":"Khống chế","type":"Động từ","meaning":"Kiểm soát, kìm chế, điều khiển","example_zh":"遇到紧急情况时，一定要努力控制好自己的情绪。","example_vi":"Khi gặp tình huống khẩn cấp, nhất định phải cố gắng kiểm soát tốt cảm xúc của mình."},
+      {"id":99,"hanzi":"夸张","pinyin":"kuāzhāng","hanviet":"Khoa trương","type":"Tính từ","meaning":"Khoa trương, phóng đại, nói quá","example_zh":"他的表演动作虽然有些夸张，但十分生动有趣。","example_vi":"Động tác biểu diễn của anh ấy tuy có phần phóng đại nhưng lại rất sinh động dí dỏm."},
+      {"id":100,"hanzi":"宽容","pinyin":"kuānróng","hanviet":"Khoan dung","type":"Tính từ","meaning":"Khoan dung, độ lượng tha thứ","example_zh":"学会宽容别人的无心过失是一种崇高的人生境界。","example_vi":"Học được lòng khoan dung với lỗi lầm vô ý của người khác là một cảnh giới nhân sinh cao đẹp."}
+    ];
+
+    // Khởi tạo State
+    let fullVocabulary = [...DEFAULT_100_WORDS];
+    let activeScopeList = [];
+    let starredWordIds = new Set(JSON.parse(localStorage.getItem('hsk5_starred_ids') || '[]'));
+    let currentMode = 'quiz_zh_vi';
+    let currentScope = 'day1';
+
+    // Quiz State
+    let quizQueue = [];
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+    let currentStreak = 0;
+    let maxSessionStreak = 0;
+    let isQuestionAnswered = false;
+    let currentQuestionData = null;
+    let showPinyinInQuiz = true;
+
+    // Flashcard State
+    let currentCardIndex = 0;
+    let isCardFlipped = false;
+
+    // Web Audio Synthesizer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'correct') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+        osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // A5
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'wrong') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(164.81, audioCtx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.3);
+      } else if (type === 'streak') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08);
+        osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16);
+        osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.24);
+        gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.45);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.45);
+      }
+    }
+
+    // TTS Web Speech API
+    function speakChinese(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      utterance.rate = parseFloat(document.getElementById('tts-rate-select').value || '1');
+      const voices = window.speechSynthesis.getVoices();
+      const zhVoice = voices.find(v => v.lang.includes('zh') || v.lang.includes('cmn'));
+      if (zhVoice) utterance.voice = zhVoice;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // Quản lý Star / Sổ tay từ khó
+    function updateStarUI() {
+      document.getElementById('star-counter').innerText = starredWordIds.size;
+      const badge = document.getElementById('starred-words-badge');
+      if (badge) badge.innerText = starredWordIds.size;
+      localStorage.setItem('hsk5_starred_ids', JSON.stringify([...starredWordIds]));
+    }
+
+    function toggleCurrentWordStar() {
+      if (!currentQuestionData) return;
+      const id = currentQuestionData.id;
+      starredWordIds.has(id) ? starredWordIds.delete(id) : starredWordIds.add(id);
+      updateStarUI();
+      renderQuizStarIcon();
+    }
+
+    function renderQuizStarIcon() {
+      const starIcon = document.getElementById('star-quiz-icon');
+      const starBtn = document.getElementById('star-btn-quiz');
+      if (!currentQuestionData) return;
+      if (starredWordIds.has(currentQuestionData.id)) {
+        starIcon.className = "ph-fill ph-star text-2xl text-amber-500";
+        starBtn.classList.add("bg-amber-50");
+      } else {
+        starIcon.className = "ph-bold ph-star text-2xl text-slate-400";
+        starBtn.classList.remove("bg-amber-50");
+      }
+    }
+
+    function filterStarredWords() {
+      if (starredWordIds.size === 0) {
+        alert("Bạn chưa đánh dấu từ nào vào Sổ tay sao! Hãy bấm biểu tượng ngôi sao để lưu từ khó.");
+        return;
+      }
+      document.getElementById('day-select').value = 'starred';
+      changeStudyScope();
+      switchMode('wordlist');
+    }
+
+    // Quản lý phạm vi học (Ngày 1..5, Tất cả, Starred)
+    function changeStudyScope() {
+      currentScope = document.getElementById('day-select').value;
+      if (currentScope === 'all') {
+        activeScopeList = [...fullVocabulary];
+      } else if (currentScope === 'day1') {
+        activeScopeList = fullVocabulary.slice(0, 20);
+      } else if (currentScope === 'day2') {
+        activeScopeList = fullVocabulary.slice(20, 40);
+      } else if (currentScope === 'day3') {
+        activeScopeList = fullVocabulary.slice(40, 60);
+      } else if (currentScope === 'day4') {
+        activeScopeList = fullVocabulary.slice(60, 80);
+      } else if (currentScope === 'day5') {
+        activeScopeList = fullVocabulary.slice(80, 100);
+      } else if (currentScope === 'starred') {
+        activeScopeList = fullVocabulary.filter(w => starredWordIds.has(w.id));
+        if (activeScopeList.length === 0) {
+          alert("Sổ tay sao đang trống! Tạm thời chuyển về Ngày 1.");
+          document.getElementById('day-select').value = 'day1';
+          changeStudyScope();
+          return;
+        }
+      }
+
+      document.getElementById('current-scope-count').innerText = activeScopeList.length;
+      document.getElementById('total-badge-tab').innerText = fullVocabulary.length;
+
+      // Reset flashcard & quiz với phạm vi mới
+      currentCardIndex = 0;
+      if (currentMode.startsWith('quiz_')) {
+        startQuiz(currentMode);
+      } else if (currentMode === 'flashcard') {
+        renderCurrentFlashcard();
+      } else if (currentMode === 'wordlist') {
+        filterWordList();
+      }
+    }
+
+    // Thuật toán tự sinh 3 đáp án sai từ toàn bộ kho từ vựng
+    function generateDynamicOptions(correctWord) {
+      const distractors = fullVocabulary
+        .filter(w => w.id !== correctWord.id)
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3);
+      return [correctWord, ...distractors].sort(() => 0.5 - Math.random());
+    }
+
+    // Bắt đầu Quiz
+    function startQuiz(mode) {
+      currentMode = mode;
+      currentQuizIndex = 0;
+      quizScore = 0;
+      currentStreak = 0;
+      updateStreakDisplay();
+
+      // Mỗi lượt quiz lấy 10 câu (hoặc tối đa số từ trong scope)
+      const count = Math.min(10, activeScopeList.length);
+      quizQueue = [...activeScopeList].sort(() => 0.5 - Math.random()).slice(0, count);
+
+      loadQuizQuestion();
+    }
+
+    function loadQuizQuestion() {
+      if (currentQuizIndex >= quizQueue.length) {
+        showQuizResults();
+        return;
+      }
+
+      isQuestionAnswered = false;
+      currentQuestionData = quizQueue[currentQuizIndex];
+
+      const total = quizQueue.length;
+      document.getElementById('quiz-progress-text').innerText = `Câu ${currentQuizIndex + 1} / ${total}`;
+      document.getElementById('quiz-progress-bar').style.width = `${(currentQuizIndex / total) * 100}%`;
+      const accuracy = currentQuizIndex === 0 ? 100 : Math.round((quizScore / currentQuizIndex) * 100);
+      document.getElementById('quiz-accuracy-text').innerText = `Đúng: ${accuracy}%`;
+
+      document.getElementById('quiz-feedback-box').classList.add('hidden');
+      document.getElementById('quiz-next-btn').classList.add('hidden');
+      renderQuizStarIcon();
+
+      const mainEl = document.getElementById('quiz-question-main');
+      const subEl = document.getElementById('quiz-question-sub');
+      const speechBtn = document.getElementById('quiz-prompt-speech');
+      const typeBadge = document.getElementById('quiz-prompt-type');
+      const optionsGrid = document.getElementById('quiz-options-grid');
+      optionsGrid.innerHTML = '';
+
+      const options = generateDynamicOptions(currentQuestionData);
+
+      if (currentMode === 'quiz_zh_vi') {
+        typeBadge.innerText = "CHỌN NGHĨA TIẾNG VIỆT ĐÚNG";
+        mainEl.innerText = currentQuestionData.hanzi;
+        mainEl.className = "font-hanzi text-4xl sm:text-5xl font-black text-slate-900 tracking-wider";
+        subEl.innerHTML = `<span class="pinyin-display ${showPinyinInQuiz ? '' : 'hidden'}">${currentQuestionData.pinyin}</span> <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-normal">[${currentQuestionData.type}]</span>`;
+        speechBtn.classList.remove('hidden');
+
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = "quiz-opt-btn p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-500 bg-white hover:bg-indigo-50/40 text-left text-slate-800 font-medium transition active:scale-[0.99] text-sm sm:text-base";
+          btn.innerHTML = `<span>${opt.meaning}</span>`;
+          btn.onclick = () => handleQuizAnswer(btn, opt.id === currentQuestionData.id);
+          optionsGrid.appendChild(btn);
+        });
+
+      } else if (currentMode === 'quiz_vi_zh') {
+        typeBadge.innerText = "CHỌN TỪ TIẾNG TRUNG TƯƠNG ỨNG";
+        mainEl.innerText = currentQuestionData.meaning;
+        mainEl.className = "text-xl sm:text-2xl font-bold text-slate-900";
+        subEl.innerHTML = `<span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">Hán-Việt: ${currentQuestionData.hanviet}</span>`;
+        speechBtn.classList.add('hidden');
+
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = "quiz-opt-btn p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-500 bg-white hover:bg-indigo-50/40 text-left text-slate-800 font-medium transition active:scale-[0.99] flex flex-col text-sm sm:text-base";
+          btn.innerHTML = `
+            <span class="font-hanzi text-2xl font-bold text-slate-900">${opt.hanzi}</span>
+            <span class="pinyin-display text-indigo-600 text-xs sm:text-sm font-semibold mt-0.5 ${showPinyinInQuiz ? '' : 'hidden'}">${opt.pinyin}</span>
+          `;
+          btn.onclick = () => handleQuizAnswer(btn, opt.id === currentQuestionData.id);
+          optionsGrid.appendChild(btn);
+        });
+
+      } else if (currentMode === 'quiz_listen') {
+        typeBadge.innerText = "NGHE VÀ CHỌN TỪ CHÍNH XÁC";
+        mainEl.innerHTML = `<div class="p-3 bg-indigo-50 rounded-2xl text-indigo-600 inline-block"><i class="ph-fill ph-waveform text-4xl animate-pulse"></i></div>`;
+        subEl.innerHTML = `<span class="text-xs text-slate-500">Chạm 'Phát âm' nếu muốn nghe lại</span>`;
+        speechBtn.classList.remove('hidden');
+
+        setTimeout(() => speakChinese(currentQuestionData.hanzi), 200);
+
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = "quiz-opt-btn p-4 rounded-xl border-2 border-slate-200 hover:border-indigo-500 bg-white hover:bg-indigo-50/40 text-left text-slate-800 font-medium transition active:scale-[0.99] flex justify-between items-center text-sm sm:text-base";
+          btn.innerHTML = `
+            <div>
+              <span class="font-hanzi text-xl font-bold text-slate-900">${opt.hanzi}</span>
+              <p class="text-xs text-slate-500 mt-0.5">${opt.meaning}</p>
+            </div>
+            <span class="pinyin-display text-xs text-indigo-600 font-medium ${showPinyinInQuiz ? '' : 'hidden'}">${opt.pinyin}</span>
+          `;
+          btn.onclick = () => handleQuizAnswer(btn, opt.id === currentQuestionData.id);
+          optionsGrid.appendChild(btn);
+        });
+      }
+    }
+
+    function handleQuizAnswer(selectedBtn, isCorrect) {
+      if (isQuestionAnswered) return;
+      isQuestionAnswered = true;
+
+      document.querySelectorAll('.quiz-opt-btn').forEach(b => b.disabled = true);
+      const feedbackBox = document.getElementById('quiz-feedback-box');
+      feedbackBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        selectedBtn.classList.remove('border-slate-200', 'bg-white');
+        selectedBtn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900', 'font-bold');
+
+        quizScore++;
+        currentStreak++;
+        if (currentStreak > maxSessionStreak) maxSessionStreak = currentStreak;
+        updateStreakDisplay();
+
+        if (currentStreak >= 3 && currentStreak % 3 === 0) {
+          playBeep('streak');
+          confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+        } else {
+          playBeep('correct');
+        }
+
+        feedbackBox.className = "rounded-xl p-4 sm:p-5 border bg-emerald-50 border-emerald-200 text-emerald-950 mb-4 text-left";
+        document.getElementById('feedback-icon').innerHTML = `<i class="ph-fill ph-check-circle text-emerald-600 text-3xl"></i>`;
+        document.getElementById('feedback-title').innerText = `Chính xác! (${currentQuestionData.hanzi} - ${currentQuestionData.pinyin})`;
+        document.getElementById('feedback-details').innerHTML = `<div><strong>Nghĩa:</strong> ${currentQuestionData.meaning}</div><div class="text-xs text-emerald-700">Âm Hán-Việt: <strong>${currentQuestionData.hanviet}</strong></div>`;
+      } else {
+        selectedBtn.classList.remove('border-slate-200', 'bg-white');
+        selectedBtn.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900', 'font-bold');
+
+        currentStreak = 0;
+        updateStreakDisplay();
+        playBeep('wrong');
+
+        feedbackBox.className = "rounded-xl p-4 sm:p-5 border bg-rose-50 border-rose-200 text-rose-950 mb-4 text-left";
+        document.getElementById('feedback-icon').innerHTML = `<i class="ph-fill ph-x-circle text-rose-600 text-3xl"></i>`;
+        document.getElementById('feedback-title').innerText = `Chưa chính xác!`;
+        document.getElementById('feedback-details').innerHTML = `
+          <div>Từ đúng là: <strong class="font-hanzi text-lg">${currentQuestionData.hanzi}</strong> (${currentQuestionData.pinyin})</div>
+          <div><strong>Nghĩa:</strong> ${currentQuestionData.meaning} (Hán-Việt: ${currentQuestionData.hanviet})</div>
+        `;
+      }
+
+      document.getElementById('feedback-example-zh').innerText = currentQuestionData.example_zh;
+      document.getElementById('feedback-example-vi').innerText = currentQuestionData.example_vi;
+      document.getElementById('quiz-next-btn').classList.remove('hidden');
+    }
+
+    function updateStreakDisplay() {
+      const el = document.getElementById('streak-counter');
+      el.innerText = currentStreak;
+      if (currentStreak > 1) {
+        el.parentElement.classList.add('pop-anim');
+        setTimeout(() => el.parentElement.classList.remove('pop-anim'), 300);
+      }
+    }
+
+    function nextQuestion() {
+      currentQuizIndex++;
+      loadQuizQuestion();
+    }
+
+    function speakCurrentQuestion() {
+      if (currentQuestionData) speakChinese(currentQuestionData.hanzi);
+    }
+
+    function speakExampleSentence() {
+      if (currentQuestionData) speakChinese(currentQuestionData.example_zh);
+    }
+
+    function togglePinyinVisibility() {
+      showPinyinInQuiz = document.getElementById('toggle-pinyin-quiz').checked;
+      document.querySelectorAll('.pinyin-display').forEach(el => {
+        showPinyinInQuiz ? el.classList.remove('hidden') : el.classList.add('hidden');
+      });
+    }
+
+    // Flashcard Render
+    function renderCurrentFlashcard() {
+      if (activeScopeList.length === 0) return;
+      const card = activeScopeList[currentCardIndex];
+
+      document.getElementById('card-index-indicator').innerText = `Thẻ ${currentCardIndex + 1} / ${activeScopeList.length}`;
+      document.getElementById('fc-pos').innerText = card.type;
+      document.getElementById('fc-hanzi').innerText = card.hanzi;
+      document.getElementById('fc-pinyin').innerText = card.pinyin;
+      document.getElementById('fc-hanviet').innerText = `HÁN-VIỆT: ${card.hanviet}`;
+      document.getElementById('fc-vietnamese').innerText = card.meaning;
+      document.getElementById('fc-example-zh').innerText = card.example_zh;
+      document.getElementById('fc-example-vi').innerText = card.example_vi;
+
+      const starIcon = document.getElementById('fc-star-icon');
+      starIcon.className = starredWordIds.has(card.id) ? "ph-fill ph-star text-amber-500" : "ph-bold ph-star text-slate-400";
+
+      isCardFlipped = false;
+      document.getElementById('flashcard-inner').classList.remove('rotate-y-180');
+    }
+
+    function flipCard() {
+      isCardFlipped = !isCardFlipped;
+      const inner = document.getElementById('flashcard-inner');
+      isCardFlipped ? inner.classList.add('rotate-y-180') : inner.classList.remove('rotate-y-180');
+    }
+
+    function nextFlashcard() {
+      currentCardIndex = (currentCardIndex + 1) % activeScopeList.length;
+      renderCurrentFlashcard();
+    }
+
+    function prevFlashcard() {
+      currentCardIndex = (currentCardIndex - 1 + activeScopeList.length) % activeScopeList.length;
+      renderCurrentFlashcard();
+    }
+
+    function shuffleFlashcards() {
+      activeScopeList = [...activeScopeList].sort(() => 0.5 - Math.random());
+      currentCardIndex = 0;
+      renderCurrentFlashcard();
+    }
+
+    function toggleFlashcardStar() {
+      const card = activeScopeList[currentCardIndex];
+      starredWordIds.has(card.id) ? starredWordIds.delete(card.id) : starredWordIds.add(card.id);
+      updateStarUI();
+      renderCurrentFlashcard();
+    }
+
+    function speakFlashcardWord() {
+      speakChinese(activeScopeList[currentCardIndex].hanzi);
+    }
+
+    function speakFlashcardExample() {
+      speakChinese(activeScopeList[currentCardIndex].example_zh);
+    }
+
+    // Wordlist View Render
+    let currentFilterType = 'all';
+    function renderWordList(items) {
+      const container = document.getElementById('wordlist-container');
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400">Không tìm thấy từ vựng nào.</div>`;
+        return;
+      }
+
+      items.forEach(word => {
+        const isStarred = starredWordIds.has(word.id);
+        const card = document.createElement('div');
+        card.className = "bg-white p-4 rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between">
+              <div class="flex items-baseline gap-2">
+                <span class="font-hanzi text-2xl font-bold text-slate-900">${word.hanzi}</span>
+                <span class="text-indigo-600 font-semibold text-sm">${word.pinyin}</span>
+                <span class="text-xs text-slate-400 uppercase font-medium">(${word.hanviet})</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <button onclick="speakChinese('${word.hanzi}')" class="p-1.5 text-slate-400 hover:text-indigo-600 rounded-lg hover:bg-slate-100 transition" title="Nghe đọc">
+                  <i class="ph-fill ph-speaker-high text-lg"></i>
+                </button>
+                <button onclick="toggleWordInList(${word.id})" class="p-1.5 text-slate-400 hover:text-amber-500 rounded-lg hover:bg-slate-100 transition">
+                  <i class="${isStarred ? 'ph-fill ph-star text-amber-500' : 'ph-bold ph-star text-slate-400'} text-lg"></i>
+                </button>
+              </div>
+            </div>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">${word.type}</span>
+              <p class="text-sm font-semibold text-slate-800">${word.meaning}</p>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-100 text-xs text-slate-500">
+            <span class="font-hanzi font-medium text-slate-700">${word.example_zh}</span>
+            <div class="italic text-slate-400 mt-0.5">${word.example_vi}</div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterWordList() {
+      const query = document.getElementById('search-word-input').value.toLowerCase().trim();
+      let list = currentFilterType === 'starred' ? fullVocabulary.filter(w => starredWordIds.has(w.id)) : activeScopeList;
+
+      if (query) {
+        list = list.filter(w =>
+          w.hanzi.includes(query) ||
+          w.pinyin.toLowerCase().includes(query) ||
+          w.meaning.toLowerCase().includes(query) ||
+          w.hanviet.toLowerCase().includes(query)
+        );
+      }
+      renderWordList(list);
+    }
+
+    function setWordListFilter(type) {
+      currentFilterType = type;
+      const allBtn = document.getElementById('filter-all-btn');
+      const starBtn = document.getElementById('filter-star-btn');
+      if (type === 'all') {
+        allBtn.className = "flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white";
+        starBtn.className = "flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 flex items-center justify-center gap-1";
+      } else {
+        starBtn.className = "flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white flex items-center justify-center gap-1";
+        allBtn.className = "flex-1 sm:flex-none px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200";
+      }
+      filterWordList();
+    }
+
+    function toggleWordInList(id) {
+      starredWordIds.has(id) ? starredWordIds.delete(id) : starredWordIds.add(id);
+      updateStarUI();
+      filterWordList();
+    }
+
+    // Switch View Mode
+    function switchMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-tab').forEach(btn => {
+        btn.className = "mode-tab px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-white text-slate-600 hover:bg-slate-100 border border-slate-200";
+      });
+      const activeTab = document.getElementById(`tab-${mode}`);
+      if (activeTab) activeTab.className = "mode-tab active px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition flex items-center gap-1.5 bg-indigo-600 text-white shadow-sm";
+
+      document.getElementById('quiz-view').classList.add('hidden');
+      document.getElementById('flashcard-view').classList.add('hidden');
+      document.getElementById('wordlist-view').classList.add('hidden');
+      document.getElementById('results-view').classList.add('hidden');
+
+      if (mode.startsWith('quiz_')) {
+        document.getElementById('quiz-view').classList.remove('hidden');
+        startQuiz(mode);
+      } else if (mode === 'flashcard') {
+        document.getElementById('flashcard-view').classList.remove('hidden');
+        renderCurrentFlashcard();
+      } else if (mode === 'wordlist') {
+        document.getElementById('wordlist-view').classList.remove('hidden');
+        filterWordList();
+      }
+    }
+
+    function showQuizResults() {
+      document.getElementById('quiz-view').classList.add('hidden');
+      document.getElementById('results-view').classList.remove('hidden');
+
+      const total = quizQueue.length;
+      const accuracy = Math.round((quizScore / total) * 100);
+
+      document.getElementById('res-score').innerText = `${quizScore} / ${total}`;
+      document.getElementById('res-accuracy').innerText = `${accuracy}%`;
+      document.getElementById('res-max-streak').innerText = `${maxSessionStreak}`;
+
+      const headline = document.getElementById('result-headline');
+      const icon = document.getElementById('result-icon');
+      if (accuracy >= 90) {
+        headline.innerText = "Xuất Sắc! Nắm Rất Chắc!";
+        icon.innerText = "🏆";
+        confetti({ particleCount: 100, spread: 70 });
+      } else if (accuracy >= 70) {
+        headline.innerText = "Rất Tốt! Hãy Duy Trì!";
+        icon.innerText = "🌟";
+      } else {
+        headline.innerText = "Cần Ôn Tập Thêm!";
+        icon.innerText = "📖";
+      }
+    }
+
+    function restartQuizWithSameMode() {
+      document.getElementById('results-view').classList.add('hidden');
+      document.getElementById('quiz-view').classList.remove('hidden');
+      startQuiz(currentMode);
+    }
+
+    // Xử lý nạp file JSON từ bên ngoài
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (!Array.isArray(importedData) || importedData.length === 0) {
+            throw new Error("File JSON phải là một mảng danh sách từ vựng.");
+          }
+          fullVocabulary = importedData;
+          localStorage.setItem('hsk5_custom_vocab', JSON.stringify(fullVocabulary));
+          alert(`Đã nạp thành công ${fullVocabulary.length} từ vựng mới vào ứng dụng!`);
+          document.getElementById('day-select').value = 'all';
+          changeStudyScope();
+        } catch (err) {
+          alert("Lỗi đọc file: Vui lòng kiểm tra định dạng file JSON!");
+          console.error(err);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Phím tắt bàn phím
+    window.addEventListener('keydown', (e) => {
+      if (currentMode === 'flashcard') {
+        if (e.code === 'Space') {
+          e.preventDefault();
+          flipCard();
+        } else if (e.code === 'ArrowRight') {
+          nextFlashcard();
+        } else if (e.code === 'ArrowLeft') {
+          prevFlashcard();
+        }
+      }
+    });
+
+    // Tự động khởi động khi nạp trang
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedVocab = localStorage.getItem('hsk5_custom_vocab');
+      if (savedVocab) {
+        try { fullVocabulary = JSON.parse(savedVocab); } catch (e) {}
+      }
+      updateStarUI();
+      changeStudyScope();
+    });
+  </script>
+</body>
+</html>
